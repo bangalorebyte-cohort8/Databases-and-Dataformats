@@ -1,0 +1,153 @@
+# Create Select Delete Database
+CREATE DATABASE test;
+
+
+\l - list of all databases
+\c - connect to database
+\d - display schema
+\q - disconnect to database and quit
+
+
+# Create Tables
+CREATE TABLE company (
+	company_id integer primary key,
+	company_name text not null,
+	company_address char(100) not null
+);
+
+CREATE TABLE employee (
+    employee_id integer primary key,
+    employee_name text,
+    employee_address char(35),
+    employee_phone integer,
+    employee_salary real
+);
+
+CREATE TABLE department (
+	department_id integer primary key,
+	department_name text,
+	employee_id integer REFERENCES employee(employee_id),
+    company_id integer REFERENCES company(company_id)
+);
+
+
+# Insertion of Values
+
+INSERT INTO company  VALUES(1,'Byte Academy','Domlur');
+INSERT INTO company  VALUES(2,'Byte Consulting','Domlur');
+INSERT INTO company  VALUES(3,'Byte Placements','Domlur');
+INSERT INTO company  VALUES(4,'Byte Interships','Domlur');
+INSERT INTO company  VALUES(5,'Byte Bootcamp','Domlur');
+
+INSERT INTO employee VALUES(1,'LAKSHMI', 'RAJAJINAGAR', 239479938,10000);
+INSERT INTO employee VALUES(2,'KENSO', 'NEW YORK', 23492384, 20000);
+INSERT INTO employee VALUES(3,'UDAY', 'DELHI', 79797239, 30000);
+
+
+
+
+# Selection of Values
+
+
+# Check Constraint
+
+CREATE TABLE products (
+	product_id integer,
+	product_name text,
+	product_price numeric CHECK(product_price > 0)
+);
+
+INSERT INTO products VALUES(1,'Soap',-10);
+
+INSERT INTO products VALUES(1,'Soap',10);
+
+SELECT * FROM products;
+
+# Not Null Constraint
+
+CREATE TABLE products (
+	product_id integer NOT NULL,
+	product_name text NOT NULL,
+    product_desc text,
+	product_price numeric NOT NULL CHECK(product_price > 0)
+	);
+
+INSERT INTO products VALUES(1,'Soap','Bathing soap',10);
+
+INSERT INTO products VALUES(1,'Soap',,10);
+
+SELECT * FROM products WHERE product_price > 10 
+
+# Unique constraint
+CREATE TABLE products (
+	product_id integer NOT NULL,
+	product_name text NOT NULL,
+	product_price numeric NOT NULL CHECK(product_price > 0),
+	UNIQUE(product_id,product_name)
+	);
+
+INSERT INTO products VALUES(1,'SOAP',10);
+
+INSERT INTO products VALUES(1,'SOAP',10);
+
+
+CREATE TABLE ordertable(
+    order_id integer,
+    order_amount numeric
+);
+
+
+
+# On delete restrict and cascade
+CREATE TABLE order_items (
+	
+    product_id integer REFERECES products(product_id) ON DELETE RESTRICT,
+    
+	order_id integer REFERENCES ordertable(order_id) ON DELETE CASCADE,
+	
+    quantity integer,
+	
+    PRIMARY KEY(product_id, order_id)
+);
+
+# Group by and having
+SELECT company_address, count(*) FROM company GROUP BY company_address;
+
+SELECT MAX(employee_salary) FROM employee;
+SELECT MIN(employee_salary) FROM employee;
+
+#subquery 
+
+SELECT *
+FROM COMPANY
+WHERE ID IN (SELECT ID
+FROM COMPANY
+WHERE SALARY > 45000);
+
+
+#LIMIT and OFFSET
+
+select * from company limit 5;
+select * from company limit 5 offset 3;
+
+# Order by sorted based on column - default Ascending
+select * from company order by salary;
+select * from company order by salary DESC;
+
+#Mathematical 
+#Agregate
+
+# Functions or stored procedures.
+CREATE OR REPLACE FUNCTION totalRecords ()
+RETURNS integer AS $total$
+declare
+total integer;
+BEGIN
+SELECT count(*) into total FROM company;
+RETURN total;
+END;
+$total$ LANGUAGE plpgsql;
+
+
+
+

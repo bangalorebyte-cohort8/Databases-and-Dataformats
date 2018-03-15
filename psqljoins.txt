@@ -1,0 +1,55 @@
+# Cross, Inner, Left Outer, Right Outer, Full Outer Joins (5 Joins)
+
+Create Employee, Department Table
+
+CREATE TABLE employee1 (
+    employee_id integer primary key,
+    employee_name text,
+    employee_address char(35),
+    employee_joindate Date,
+    employee_salary real
+);
+
+CREATE TABLE department1(
+    department_id integer primary key NOT NULL,
+    department_name char(50) NOT NULL,
+    emp_id integer NOT NULL
+);
+
+INSERT INTO employee1 VALUES(1,'LAKSHMI', 'RAJAJINAGAR', 'MAY 2 2017',10000);
+INSERT INTO employee1 VALUES(2,'KENSO', 'NEW YORK', 'JUNE 2 2017',20000);
+INSERT INTO employee1 VALUES(3,'UDAY', 'DELHI', 'AUGUST 2 2017',30000);
+
+
+INSERT INTO department1 VALUES(1,'ACADEMY',1);
+INSERT INTO department1 VALUES(2,'CONSULTING',2);
+INSERT INTO department1 VALUES(3,'MARKETING',1);
+
+
+# Cross Joins - Take 2 tables and combine for output
+# Match each and every row with first table with each and every row with other table
+
+SELECT employee_id, employee_name, department_id FROM employee1 CROSS JOIN department1;
+
+# Inner Join - join made on 2 different tables create a new list of tables by common field that we have in both the tables based on the join predicate 
+
+SELECT employee_id, employee_name, department_id,department_name FROM employee1 INNER JOIN department1
+ON employee1.employee_id = department1.emp_id;
+
+
+# Outer Joins - extension of inner joins
+
+a) left outer joins - inner join is performed first, for each row in T1 that doesn't satisfy the join condition with any row in T2,  a joined row is added with null values of T2.
+
+SELECT employee_id, employee_name, department_id,department_name FROM employee1 LEFT OUTER JOIN department1
+ON employee1.employee_id = department1.emp_id;
+
+b) right outer joins - inner join is performed first, for each row in T2 that doesn't satisfy the join condition with any row in T1, a joined row is added with null values of T1
+
+SELECT employee_id, employee_name, department_id,department_name FROM employee1 RIGHT OUTER JOIN department1
+ON employee1.employee_id = department1.emp_id;
+
+c) full outer joins - inner join is performed first then left outer join and right outer join is performed
+
+SELECT employee_id, employee_name, department_id,department_name FROM employee1 FULL OUTER JOIN department1
+ON employee1.employee_id = department1.emp_id;
